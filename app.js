@@ -50,11 +50,49 @@ function preload() {
     frameHeight: 96,
   });
   
-  // Add this to ensure the font is loaded
-  this.load.text('flappy-font', 'assets/flappy-font.ttf');
-  
-  // WebFont loading to ensure the font is ready
+  // Explicit font loading
   this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
+}
+
+// Create text elements function - add this new function
+function createTextElements() {
+  // Initial instruction text
+  startText = this.add.text(450, 300, "Tap or Press SPACE to Start", {
+    fontFamily: "FlappyFont, Arial, sans-serif",
+    fontSize: "16px",
+    fill: "#ffffff",
+    stroke: "#000000",
+    strokeThickness: 4,
+    padding: { x: 10, y: 5 },
+  });
+  startText.setOrigin(0.5);
+  startText.setDepth(30);
+
+  // Game over text
+  gameOverText = this.add.text(450, 300, "GAME OVER", {
+    fontFamily: "FlappyFont, Arial, sans-serif",
+    fontSize: "40px",
+    fill: "#ffffff",
+    stroke: "#000000",
+    strokeThickness: 6,
+    padding: { x: 10, y: 5 },
+  });
+  gameOverText.setOrigin(0.5);
+  gameOverText.visible = false;
+  gameOverText.setDepth(30);
+
+  // Restart text
+  restartText = this.add.text(450, 340, "Tap or Press SPACE to Restart", {
+    fontFamily: "FlappyFont, Arial, sans-serif",
+    fontSize: "16px",
+    fill: "#ffffff",
+    stroke: "#000000",
+    strokeThickness: 4,
+    padding: { x: 10, y: 5 },
+  });
+  restartText.setOrigin(0.5);
+  restartText.visible = false;
+  restartText.setDepth(30);
 }
 
 // Create game elements
@@ -93,43 +131,24 @@ function create() {
   // Set up score display
   scoreText = document.getElementById("score-display");
 
-  // Initial instruction text
-  startText = this.add.text(450, 300, "Tap or Press SPACE to Start", {
-    fontFamily: 'FlappyFont',
-    fontSize: "16px",
-    fill: "#ffffff",
-    stroke: "#000000",
-    strokeThickness: 4,
-    padding: { x: 10, y: 5 },
-  });
-  startText.setOrigin(0.5);
-  startText.setDepth(30);
-
-  // Game over text
-  gameOverText = this.add.text(450, 300, "GAME OVER", {
-    fontFamily: 'FlappyFont',
-    fontSize: "40px",
-    fill: "#ffffff",
-    stroke: "#000000",
-    strokeThickness: 6,
-    padding: { x: 10, y: 5 },
-  });
-  gameOverText.setOrigin(0.5);
-  gameOverText.visible = false;
-  gameOverText.setDepth(30);
-
-  // Restart text
-  restartText = this.add.text(450, 340, "Tap or Press SPACE to Restart", {
-    fontFamily: 'FlappyFont',
-    fontSize: "16px",
-    fill: "#ffffff",
-    stroke: "#000000",
-    strokeThickness: 4,
-    padding: { x: 10, y: 5 },
-  });
-  restartText.setOrigin(0.5);
-  restartText.visible = false;
-  restartText.setDepth(30);
+  // Load fonts with WebFont and create text elements
+  if (window.WebFont) {
+    WebFont.load({
+      custom: {
+        families: ['FlappyFont']
+      },
+      active: () => {
+        createTextElements.call(this);
+      },
+      inactive: () => {
+        // Fallback if font can't load
+        createTextElements.call(this);
+      }
+    });
+  } else {
+    // Fallback if WebFont isn't available
+    createTextElements.call(this);
+  }
 
   // Store reference to the scene for later use
   this.scene.scene = this;
@@ -188,7 +207,7 @@ function startGame(scene) {
   bird.body.allowGravity = true;
   flapBird.call(scene);
   lastPipeTime = scene.time.now;
-  
+
   if (startText) {
     startText.visible = false;
   }
@@ -272,7 +291,7 @@ function restartGame(scene) {
 
   gameOverText.visible = false;
   restartText.visible = false;
-  
+
   if (startText) {
     startText.visible = true;
   }
