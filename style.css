@@ -1,0 +1,26 @@
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #333;
+}
+#game-container {
+  position: relative;
+  width: 900px;
+  height: 600px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+#score-display {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-family: 'FlappyFont', Arial, sans-serif;
+  font-size: 24px;
+  color: #ffffff;
+  text-shadow: 2px 2px 0 #000000;
+  z-index: 100;
+}
